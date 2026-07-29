@@ -2,6 +2,22 @@
 
 Issues and pull requests are welcome.
 
+## Repository layout
+
+```
+Sources/Mosaic/          core library (MosaicCore)
+  Model/                 MosaicModel, MosaicSection, result builders
+  Items/                 MosaicItem, typed wrapper, factories, refresh, swipe actions
+  Layout/                MosaicLayout, layout DSL, built-in layouts
+  Cells/                 hosted cells, supplementary + decoration views
+  Views/                 MosaicView, delegate conformances, SwiftUI wrapper
+  Platform/              UIKit/AppKit aliases, shims, capability flags
+Sources/MosaicExports/   the `Mosaic` product: re-export + macro declarations
+Sources/MosaicMacros/    @MosaicItem macro implementation (swift-syntax)
+Tests/MosaicTests/       cross-platform suite
+Assets/                  logo and other repository art (not part of any target)
+```
+
 ## Development
 
 ```sh

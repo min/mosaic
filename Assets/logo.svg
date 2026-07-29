@@ -1,0 +1,26 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!--
+    The mark is a miniature of what Mosaic renders: three columns of tiles
+    with staggered heights, sharing one gradient so they read as a single
+    composition. Works on light and dark backgrounds.
+  -->
+  <defs>
+    <linearGradient id="mosaic-g" gradientUnits="userSpaceOnUse" x1="14" y1="14" x2="114" y2="114">
+      <stop offset="0" stop-color="#7C5CFF"/>
+      <stop offset="0.55" stop-color="#4E7DF7"/>
+      <stop offset="1" stop-color="#00B8C4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- column 1 -->
+  <rect x="14" y="14" width="28" height="38" rx="9" fill="url(#mosaic-g)"/>
+  <rect x="14" y="60" width="28" height="54" rx="9" fill="url(#mosaic-g)"/>
+
+  <!-- column 2 -->
+  <rect x="50" y="14" width="28" height="58" rx="9" fill="url(#mosaic-g)"/>
+  <rect x="50" y="80" width="28" height="34" rx="9" fill="url(#mosaic-g)"/>
+
+  <!-- column 3 -->
+  <rect x="86" y="14" width="28" height="26" rx="9" fill="url(#mosaic-g)"/>
+  <rect x="86" y="48" width="28" height="66" rx="9" fill="url(#mosaic-g)"/>
+</svg>
