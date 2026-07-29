@@ -31,23 +31,23 @@ targets:
     dependencies:
       - package: Mosaic
         product: Mosaic
-    info:
-      path: Generated/Info-iOS.plist
-      properties:
-        UILaunchScreen: {}
-        UISupportedInterfaceOrientations:
-          - UIInterfaceOrientationPortrait
-          - UIInterfaceOrientationLandscapeLeft
-          - UIInterfaceOrientationLandscapeRight
-        UISupportedInterfaceOrientations~ipad:
-          - UIInterfaceOrientationPortrait
-          - UIInterfaceOrientationPortraitUpsideDown
-          - UIInterfaceOrientationLandscapeLeft
-          - UIInterfaceOrientationLandscapeRight
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.mosaic.examples.ios
         TARGETED_DEVICE_FAMILY: "1,2"
+        # Info.plist keys are expressed as build settings so nothing has to be
+        # generated on disk, which keeps the committed project buildable from a
+        # fresh clone.
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: >-
+          UIInterfaceOrientationPortrait
+          UIInterfaceOrientationLandscapeLeft
+          UIInterfaceOrientationLandscapeRight
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: >-
+          UIInterfaceOrientationPortrait
+          UIInterfaceOrientationPortraitUpsideDown
+          UIInterfaceOrientationLandscapeLeft
+          UIInterfaceOrientationLandscapeRight
 
   MosaicExamples-macOS:
     type: application
@@ -57,12 +57,6 @@ targets:
     dependencies:
       - package: Mosaic
         product: Mosaic
-    info:
-      path: Generated/Info-macOS.plist
-      properties:
-        LSMinimumSystemVersion: "14.0"
-        NSHumanReadableCopyright: ""
-        NSPrincipalClass: NSApplication
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.mosaic.examples.macos
