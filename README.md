@@ -34,6 +34,16 @@ Reach for it when you want collection view behavior that SwiftUI's `List` and
 - **One codebase, two platforms.** The same feed, grid, or browser runs on UIKit
   and AppKit.
 
+## Examples
+
+A gallery app in [`Examples/`](Examples) runs the same source on both platforms:
+feed, shelves, list, a layout gallery, decorations, and a screen that renders
+`MosaicPlatformCapabilities` so the platform differences are visible side by side.
+
+```sh
+open Examples/MosaicExamples.xcodeproj    # run MosaicExamples-iOS or -macOS
+```
+
 ## Installation
 
 ```swift

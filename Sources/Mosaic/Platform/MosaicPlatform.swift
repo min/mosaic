@@ -136,10 +136,23 @@ public enum MosaicPlatformCapabilities {
 
 // MARK: - Cell content
 
-extension MosaicCell {
+public extension MosaicCell {
     /// The view that holds an item's content.
     ///
-    /// `contentView` on iOS; the item's root `view` on macOS.
+    /// `contentView` on iOS and the item's root `view` on macOS. Build the
+    /// subview hierarchy of a custom cell against this, and the cell compiles
+    /// unchanged on both platforms.
+    ///
+    /// ```swift
+    /// final class BadgeCell: MosaicCell {
+    ///     private let label = MosaicLabel()
+    ///
+    ///     override init(frame: CGRect) {   // nibName:bundle: on macOS
+    ///         super.init(frame: frame)
+    ///         mosaicContentView.addSubview(label)
+    ///     }
+    /// }
+    /// ```
     var mosaicContentView: MosaicPlatformView {
         #if canImport(UIKit)
         contentView

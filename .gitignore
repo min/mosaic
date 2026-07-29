@@ -6,3 +6,12 @@ Package.resolved
 *.xcworkspace
 DerivedData/
 .index-build/
+
+# The examples project is committed so the demo opens without installing
+# xcodegen. Regenerate it from Examples/project.yml after changing the spec or
+# adding files.
+!Examples/MosaicExamples.xcodeproj
+Examples/MosaicExamples.xcodeproj/xcuserdata/
+Examples/MosaicExamples.xcodeproj/project.xcworkspace/xcuserdata/
+Examples/MosaicExamples.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+Examples/Generated/

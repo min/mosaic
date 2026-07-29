@@ -15,8 +15,21 @@ Sources/Mosaic/          core library (MosaicCore)
 Sources/MosaicExports/   the `Mosaic` product: re-export + macro declarations
 Sources/MosaicMacros/    @MosaicItem macro implementation (swift-syntax)
 Tests/MosaicTests/       cross-platform suite
+Examples/                gallery app; Shared/ builds for both iOS and macOS
 Assets/                  logo and other repository art (not part of any target)
 ```
+
+`Examples/MosaicExamples.xcodeproj` is committed so the demo opens without extra
+tooling, and it is generated from `Examples/project.yml`. After changing the spec
+or adding files under `Examples/Shared`, regenerate it and commit the result:
+
+```sh
+brew install xcodegen        # once
+cd Examples && xcodegen generate
+```
+
+CI builds both example schemes, so a stale project fails there rather than on
+someone else's Mac.
 
 ## Development
 

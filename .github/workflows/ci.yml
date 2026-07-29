@@ -49,3 +49,38 @@ jobs:
           xcodebuild test \
             -scheme Mosaic \
             -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.device }}"
+
+  examples:
+    name: build examples (${{ matrix.name }})
+    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS
+            scheme: MosaicExamples-macOS
+            destination: platform=macOS
+          - name: iOS
+            scheme: MosaicExamples-iOS
+            destination: platform=iOS Simulator,name=__RESOLVED__
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve destination
+        id: dest
+        run: |
+          DEST="${{ matrix.destination }}"
+          if [[ "$DEST" == *__RESOLVED__* ]]; then
+            DEVICE=$(xcrun simctl list devices available | grep -oE 'iPhone [^(]+' | head -1 | xargs)
+            DEST="${DEST/__RESOLVED__/$DEVICE}"
+          fi
+          echo "Using destination: $DEST"
+          echo "value=$DEST" >> "$GITHUB_OUTPUT"
+      - name: Build
+        # The committed project must stay buildable; a stale pbxproj that no
+        # longer matches Examples/Shared fails here rather than on a user's Mac.
+        working-directory: Examples
+        run: |
+          xcodebuild build \
+            -project MosaicExamples.xcodeproj \
+            -scheme ${{ matrix.scheme }} \
+            -destination "${{ steps.dest.outputs.value }}"
