@@ -13,26 +13,26 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green" alt="License: MIT"></a>
 </p>
 
-Describe a model of sections and items; Mosaic owns the collection view, the diffable
-data source, and the diffing. Items are identified by a stable `id` and re-rendered
-**in place** when their `contentHash` changes — cells are never torn down just because
-their content moved on. One API surface backs `UICollectionView` on iOS and
-`NSCollectionView` on macOS; the model, layout DSL, and item callbacks compile
-unchanged on both.
+You describe a model of sections and items. Mosaic owns the collection view, the
+diffable data source, and the diffing. Items are identified by a stable `id` and
+re-rendered **in place** when their `contentHash` changes, so a cell is never torn
+down just because its content changed. One API surface backs `UICollectionView` on
+iOS and `NSCollectionView` on macOS, and the model, layout DSL, and item callbacks
+compile unchanged on both.
 
 ## Why Mosaic?
 
-Reach for it when you want collection-view behavior SwiftUI's `List` and `LazyVGrid`
-don't expose, without giving up a declarative model:
+Reach for it when you want collection view behavior that SwiftUI's `List` and
+`LazyVGrid` don't expose, without giving up a declarative model:
 
-- **Compositional layouts** — orthogonal sections, custom groups, pinned boundary
+- **Compositional layouts.** Orthogonal sections, custom groups, pinned boundary
   items, decorations, and anything else `NSCollectionLayoutSection` can express.
-- **An explicit identity/refresh contract** — diffing is driven by stable IDs,
-  reconfiguration by a projection of exactly the state a cell renders.
-- **Cell reuse you control** — real cells, prefetching hooks, lifecycle callbacks,
-  and SwiftUI content hosted inside any of them.
-- **One codebase, two platforms** — the same feed, grid, or browser runs on
-  UIKit and AppKit.
+- **An explicit identity and refresh contract.** Stable IDs drive the diffing, and a
+  projection of exactly the state a cell renders drives reconfiguration.
+- **Cell reuse you control.** Real cells, prefetching hooks, lifecycle callbacks, and
+  SwiftUI content hosted inside any of them.
+- **One codebase, two platforms.** The same feed, grid, or browser runs on UIKit
+  and AppKit.
 
 ## Installation
 
@@ -48,7 +48,7 @@ dependencies: [
 
 ## Getting started
 
-A value and a cell that renders it:
+Start with a value and a cell that renders it:
 
 ```swift
 import Mosaic
@@ -89,12 +89,12 @@ let model = MosaicModel {
 mosaicView.apply(model, animate: true)
 ```
 
-`MosaicView` is a plain `UIView`/`NSView` — add it to a view controller and call
-`apply(_:animate:)` whenever your data changes.
+`MosaicView` is a plain `UIView` on iOS and a plain `NSView` on macOS. Add it to a
+view controller and call `apply(_:animate:)` whenever your data changes.
 
 ### From SwiftUI
 
-`MosaicViewRepresentable` wraps the same view; its builder receives the current width
+`MosaicViewRepresentable` wraps the same view. Its builder receives the current width
 so layouts can adapt:
 
 ```swift
@@ -137,15 +137,15 @@ MosaicSection("articles") {
 
 ### Identity vs. refresh
 
-Identity drives diffing; `contentHash` decides whether a visible cell needs
-reconfiguring. Keep them separate — conform to `MosaicRefreshable` and project only the
-fields the cell actually renders:
+Identity decides how items are diffed. `contentHash` decides whether a visible cell
+needs reconfiguring. Keep the two separate: conform to `MosaicRefreshable` and project
+only the fields the cell actually renders.
 
 ```swift
 struct Article: Hashable, Identifiable, MosaicRefreshable {
     let id: Int
     let title: String
-    let fetchedAt: Date          // not rendered → not in the projection
+    let fetchedAt: Date          // not rendered, so not in the projection
 
     var mosaicRefreshValue: String { title }
 }
@@ -160,10 +160,10 @@ context such as selection or presentation mode.
 
 | Layout | Shape |
 | --- | --- |
-| `.list(style:)` | Rows; list appearances and swipe actions on iOS, plain compositional list on macOS |
+| `.list(style:)` | Rows. List appearances and swipe actions on iOS, a plain compositional list on macOS |
 | `.grid(columns:itemHeight:)` | Fixed column count, uniform item height |
-| `.adaptiveGrid(minItemWidth:)` | Column count derived from available width |
-| `.waterfall(columns:estimatedHeight:)` | Equal-width columns with estimated heights — rows stay aligned (not a staggered/masonry layout) |
+| `.adaptiveGrid(minItemWidth:)` | Column count derived from the available width |
+| `.waterfall(columns:estimatedHeight:)` | Equal-width columns with estimated heights. Rows stay aligned rather than staggered |
 | `.carousel(itemHeight:behavior:)` | Horizontally scrolling section with paging behaviors |
 | `.custom(_:)` / `MosaicLayout.section { ... }` | Anything compositional layout can express |
 
@@ -191,8 +191,8 @@ leading/trailing swipe-action configurations.
 
 ### Headers, footers, and decorations
 
-A section carries at most one supplementary view per element kind; the layout supplies
-the boundary item, the section supplies the view:
+A section carries at most one supplementary view per element kind. The layout supplies
+the boundary item and the section supplies the view:
 
 ```swift
 MosaicSection(
@@ -206,7 +206,7 @@ MosaicSection(
 
 Supplementary views host SwiftUI (`.header { ... }`) or platform views
 (`.header(HeaderView.self, ...)`), and visible ones are reconfigured in place on every
-`apply`. Section backgrounds register through `MosaicDecorationRegistration` +
+`apply`. Section backgrounds register through `MosaicDecorationRegistration` and
 `layout.decorated(by:)`.
 
 ## One API, two platforms
@@ -224,26 +224,29 @@ Platform types are reached through aliases, so a cell written against
 
 The whole `NSCollectionLayout*` family and diffable data sources exist on both
 platforms, so layouts, decorations, supplementary views, and prefetching behave
-identically. A few UIKit behaviors have no AppKit counterpart; rather than splitting
-the API, they are **accepted and inert** on macOS, so shared call sites need no `#if`.
-Query them via `MosaicPlatformCapabilities`:
+identically.
 
-- **Swipe actions** (`onDelete(_:)`, `leading`/`trailingSwipeActionsConfiguration`) —
-  `NSCollectionView` has no swipe affordance. Configurations are stored, never invoked.
-- **List configuration** — no `UICollectionLayoutListConfiguration`, so every
-  `MosaicListStyle` renders as a plain compositional list, and `MosaicListCell` is just
-  `MosaicCell` (no separators or accessories).
-- **Interactive reordering** — `NSCollectionViewDiffableDataSource` has no
+A few UIKit behaviors have no AppKit counterpart. Rather than splitting the API,
+Mosaic accepts them everywhere and leaves them inert on macOS, so shared call sites
+need no `#if`. Query them through `MosaicPlatformCapabilities`:
+
+- **Swipe actions.** `NSCollectionView` has no swipe affordance, so `onDelete(_:)` and
+  the leading/trailing swipe configurations are stored but never invoked.
+- **List configuration.** There is no `UICollectionLayoutListConfiguration`, so every
+  `MosaicListStyle` renders as a plain compositional list and `MosaicListCell` is the
+  same type as `MosaicCell` (no separators or accessories).
+- **Interactive reordering.** `NSCollectionViewDiffableDataSource` has no
   `reorderingHandlers`, so `canReorderSectionItem` and `onSectionItemsReordered` are
-  stored, never invoked.
-- **`contentInsetAdjustmentBehavior`** — no `NSScrollView` equivalent; ignored.
-- **Snapshot reconfiguration** — AppKit has no `reconfigureItems`, so Mosaic re-runs the
-  item's `configure` against the visible cell instead. Same observable contract: updated
-  in place, cell never torn down.
+  stored but never invoked.
+- **`contentInsetAdjustmentBehavior`.** `NSScrollView` has no equivalent, so the value
+  is ignored.
+- **Snapshot reconfiguration.** AppKit has no `reconfigureItems`, so Mosaic re-runs
+  the item's `configure` closure against the visible cell instead. The observable
+  contract is the same: the cell updates in place and is never torn down.
 
-Two smaller notes: AppKit loads an item's view lazily, so the hosted cells force it at
-init to match UIKit's lifecycle; and SwiftUI content is hosted via
-`UIHostingConfiguration` on iOS and `NSHostingView` on macOS.
+Two smaller notes. AppKit loads an item's view lazily, so the hosted cells force the
+load at init to match UIKit's lifecycle. SwiftUI content is hosted through
+`UIHostingConfiguration` on iOS and through `NSHostingView` on macOS.
 
 ## Development
 
@@ -254,11 +257,11 @@ xcodebuild test -scheme Mosaic \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro'   # any installed simulator
 ```
 
-UIKit-only behavior (swipe delivery, list content configuration, accessories) is covered
-by `#if canImport(UIKit)` tests; everything else runs on both platforms. See
-[CONTRIBUTING.md](CONTRIBUTING.md) for the repository layout, style rules, and design
-ground rules.
+UIKit-only behavior (swipe delivery, list content configuration, accessories) is
+covered by tests behind `#if canImport(UIKit)`. Everything else runs on both
+platforms. See [CONTRIBUTING.md](CONTRIBUTING.md) for the repository layout, style
+rules, and design ground rules.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).

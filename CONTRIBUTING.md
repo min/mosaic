@@ -31,19 +31,19 @@ xcodebuild test -scheme Mosaic \
 
 ## Before opening a PR
 
-- `swiftformat .` and `swiftlint --strict` must both pass clean — CI enforces
-  both. Configuration lives in `.swiftformat` / `.swiftlint.yml`.
+- `swiftformat .` and `swiftlint --strict` must pass clean. CI enforces both,
+  and configuration lives in `.swiftformat` / `.swiftlint.yml`.
 - Add or update tests for behavior changes. Cross-platform behavior belongs in
   shared tests; UIKit-only behavior goes behind `#if canImport(UIKit)`.
 - Anything that behaves differently on macOS than iOS should be reflected in
-  `MosaicPlatformCapabilities` and called out in the README's *Platform
-  differences* section.
+  `MosaicPlatformCapabilities` and called out in the README's *One API, two
+  platforms* section.
 - Public API needs doc comments.
 
 ## Design ground rules
 
 - One public API surface for both platforms. Platform divergence is expressed
-  as accepted-but-inert behavior plus a capability flag — not parallel `#if`
+  as accepted-but-inert behavior plus a capability flag, not parallel `#if`
   APIs at call sites.
 - Item identity (diffing) and refresh state (reconfiguration) stay separate
   concepts; don't merge them.
