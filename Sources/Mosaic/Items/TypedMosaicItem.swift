@@ -152,6 +152,7 @@ public extension TypedMosaicItem {
         )
     }
 
+    @MainActor
     func onDelete(
         title: String? = nil,
         image: MosaicPlatformImage? = nil,

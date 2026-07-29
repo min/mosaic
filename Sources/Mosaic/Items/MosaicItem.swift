@@ -191,6 +191,11 @@ public struct MosaicItem: Hashable {
     }
 
     /// Returns a copy with a trailing delete action.
+    ///
+    /// Main-actor-isolated because the swipe configuration closure captures the
+    /// non-Sendable image and color; forming it off the main actor would send
+    /// them across isolation domains.
+    @MainActor
     public func onDelete(
         title: String? = nil,
         image: MosaicPlatformImage? = nil,
