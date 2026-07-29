@@ -1,0 +1,27 @@
+--swiftversion 6.0
+--indent 4
+--maxwidth 120
+--commas always
+--trimwhitespace always
+--self remove
+--patternlet inline
+--stripunusedargs closure-only
+--ranges no-space
+--operatorfunc spaced
+--elseposition same-line
+--guardelse same-line
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+--funcattributes prev-line
+--typeattributes prev-line
+--storedvarattrs same-line
+--computedvarattrs prev-line
+--header strip
+# redundantSendable strips `Sendable` conformances it thinks are implied, but
+# enums/structs are NOT always implicitly Sendable — dropping it can be a real
+# regression. Keep it disabled.
+--disable redundantSendable
+--exclude .build
+# Platform #if blocks wrap whole files/extensions; indenting them buys nothing.
+--ifdef no-indent

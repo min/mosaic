@@ -1,0 +1,25 @@
+excluded:
+  - .build
+
+disabled_rules:
+  - todo
+  - line_length      # swiftformat --maxwidth is the authority
+  - trailing_comma   # swiftformat --commas always is the authority
+  - opening_brace    # conflicts with swiftformat wrapped-closure output
+  - file_length      # platform-doubled files legitimately run long
+  - type_body_length
+
+opt_in_rules:
+  - empty_count
+  - empty_string
+  - explicit_init
+  - first_where
+  - last_where
+  - sorted_first_last
+  - closure_spacing
+  - contains_over_filter_count
+  - redundant_nil_coalescing
+  - prefer_self_in_static_references
+
+identifier_name:
+  min_length: 1     # allow x, y, i in layout math

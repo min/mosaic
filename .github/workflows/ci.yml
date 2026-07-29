@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: lint
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install linters
+        # Not guaranteed on the runner image; no-op when already present.
+        run: brew list swiftformat &>/dev/null || brew install swiftformat;
+          brew list swiftlint &>/dev/null || brew install swiftlint
+      - run: swiftformat --lint .
+      - run: swiftlint --strict --quiet
+
+  macos:
+    name: swift test (macOS)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift --version
+      - run: swift test
+
+  ios:
+    name: test (iOS Simulator)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pick a simulator
+        id: sim
+        # Runner images rotate their installed simulators, so resolve one at
+        # runtime instead of hard-coding a device name.
+        run: |
+          DEVICE=$(xcrun simctl list devices available | grep -oE 'iPhone [^(]+' | head -1 | xargs)
+          echo "Using simulator: $DEVICE"
+          echo "device=$DEVICE" >> "$GITHUB_OUTPUT"
+      - name: Test
+        run: |
+          xcodebuild test \
+            -scheme Mosaic \
+            -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.device }}"
